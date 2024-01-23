@@ -5,22 +5,21 @@ import {
   combineReducers,
 } from "@reduxjs/toolkit";
 import authReducer from "../features/user/authSlice";
-import storage from "redux-persist/lib/storage";
+import storage from "redux-persist/lib/storage"; 
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 
-const persistConfig = {
-  key: "root",
-  storage,
+const authPersistConfig = {
+  key: "auth",
+  storage:storage,
 };
+
 const rootReducer = combineReducers({
-  auth: authReducer,
+  auth: persistReducer(authPersistConfig, authReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   devTools: process.env.NODE_ENV !== "production",
   middleware: [thunk],
 });

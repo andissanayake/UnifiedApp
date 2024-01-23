@@ -35,7 +35,7 @@ export const AxiosApiInterceptor = () => {
                 accessToken: authData.accessToken,
                 refreshToken: authData.refreshToken,
               });
-              if (response.isSucceed && response.data) {
+              if (response && response.isSucceed && response.data) {
                 dispatch(updateToken(response.data));
                 error.config.headers.Authorization = `Bearer ${response.data.accessToken}`;
                 return axios.request(error.config);

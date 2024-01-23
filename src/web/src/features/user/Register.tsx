@@ -24,10 +24,10 @@ export const Register = () => {
       values.password as string
     );
     dispatch(resetLoading());
-    if (data.isSucceed) {
+    if (data?.isSucceed) {
       message.success("Registration is successful, Please login.");
       navigate("/login");
-    } else {
+    } else if(data?.messages) {
       data.messages?.DuplicateUserName &&
         formRef.current?.setFields([
           { name: "email", errors: data.messages?.DuplicateUserName },
@@ -36,6 +36,9 @@ export const Register = () => {
         formRef.current?.setFields([
           { name: "password", errors: data.messages?.password },
         ]);
+    }
+    else{
+      message.error("Unexpected error occurred please try again later.");
     }
   };
   return (

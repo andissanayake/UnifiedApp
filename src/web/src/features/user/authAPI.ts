@@ -9,8 +9,10 @@ export const login = async (email: string, password: string) => {
   >(`${BASE_URL}/user/login`, {
     email: email,
     password: password,
+  }).catch((ex)=>{
+    console.log(ex);
   });
-  return response.data;
+  return response?.data;
 };
 export const refreshToken = async (data: {
   accessToken: string;

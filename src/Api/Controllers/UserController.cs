@@ -7,13 +7,9 @@ namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class UserController : ControllerBase
+    public class UserController(UserService userService) : ControllerBase
     {
-        private readonly UserService _userService;
-        public UserController(UserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly UserService _userService = userService;
 
         [HttpPost]
         public async Task<AppResponse<bool>> Register(UserRegisterRequest req)

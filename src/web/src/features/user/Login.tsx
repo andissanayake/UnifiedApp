@@ -19,19 +19,21 @@ export const Login = () => {
     dispatch(setLoading());
     const data = await login(values.email as string, values.password as string);
     dispatch(resetLoading());
-    if (data.isSucceed && data.data) {
+    if (data?.isSucceed && data?.data) {
       message.success("Login is successful.");
       dispatch(updateToken(data.data));
       navigate("/");
-    } else {
-      data.messages?.email &&
+    } else if(data!=null) {
+      data?.messages?.email &&
         formRef.current?.setFields([
           { name: "email", errors: data.messages?.email },
         ]);
-      data.messages?.password &&
+      data?.messages?.password &&
         formRef.current?.setFields([
           { name: "password", errors: data.messages?.password },
         ]);
+    }else{
+      message.error("Unexpected error occurred please try again later.");
     }
   };
   return (

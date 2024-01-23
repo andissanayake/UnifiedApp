@@ -17,23 +17,23 @@
             var principal = TokenUtil.GetPrincipalFromExpiredToken(_appSettings, request.AccessToken);
             if (principal == null || principal.FindFirst("UserName")?.Value == null)
             {
-                return new AppResponse<UserRefreshTokenResponce>().SetErrorResponce("email", "User not found");
+                return new AppResponse<UserRefreshTokenResponce>().SetErrorResponse("email", "User not found");
             }
             else
             {
                 var user = await _userManager.FindByNameAsync(principal.FindFirst("UserName")?.Value ?? "");
                 if (user == null)
                 {
-                    return new AppResponse<UserRefreshTokenResponce>().SetErrorResponce("email", "User not found");
+                    return new AppResponse<UserRefreshTokenResponce>().SetErrorResponse("email", "User not found");
                 }
                 else
                 {
                     if (!await _userManager.VerifyUserTokenAsync(user, "APP", "RefreshToken", request.RefreshToken))
                     {
-                        return new AppResponse<UserRefreshTokenResponce>().SetErrorResponce("token", "Refresh token expired");
+                        return new AppResponse<UserRefreshTokenResponce>().SetErrorResponse("token", "Refresh token expired");
                     }
                     var token = await GenerateUserToken(user);
-                    return new AppResponse<UserRefreshTokenResponce>().SetSuccessResponce(new UserRefreshTokenResponce() { AccessToken = token.AccessToken, RefreshToken = token.RefreshToken });
+                    return new AppResponse<UserRefreshTokenResponce>().SetSuccessResponse(new UserRefreshTokenResponce() { AccessToken = token.AccessToken, RefreshToken = token.RefreshToken });
                 }
             }
         }

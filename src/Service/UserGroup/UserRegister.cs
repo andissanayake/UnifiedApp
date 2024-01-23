@@ -22,11 +22,11 @@ namespace Service.UserGroup
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                return new AppResponse<bool>().SetSuccessResponce(true);
+                return new AppResponse<bool>().SetSuccessResponse(true);
             }
             else
             {
-                return new AppResponse<bool>().SetErrorResponce(GetRegisterErrors(result));
+                return new AppResponse<bool>().SetErrorResponse(GetRegisterErrors(result));
             }
         }
 

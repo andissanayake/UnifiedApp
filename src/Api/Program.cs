@@ -12,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
-var appSetttings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>() ?? new AppSettings();
-builder.Services.AddSingleton(appSetttings);
+var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>() ?? new AppSettings();
+builder.Services.AddSingleton(appSettings);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionStr, x => x.MigrationsAssembly("Data")));
@@ -25,7 +25,7 @@ builder.Services.AddIdentityCore<ApplicationUser>()
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
-    options.TokenLifespan = TimeSpan.FromSeconds(appSetttings.RefreshTokenExpireSeconds);
+    options.TokenLifespan = TimeSpan.FromSeconds(appSettings.RefreshTokenExpireSeconds);
 });
 
 builder.Services.AddAuthentication(options =>
@@ -44,9 +44,9 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             RequireExpirationTime = true,
-            ValidIssuer = appSetttings.Issuer,
-            ValidAudience = appSetttings.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSetttings.SecretKey)),
+            ValidIssuer = appSettings.Issuer,
+            ValidAudience = appSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.SecretKey)),
             ClockSkew = TimeSpan.FromSeconds(0)
         };
     });
@@ -58,7 +58,7 @@ builder.Services.AddCors(options =>
     {
         builder.AllowAnyHeader()
         .AllowAnyMethod()
-        .WithOrigins(appSetttings.Audience)
+        .WithOrigins(appSettings.Audience)
         .AllowCredentials();
     });
 });

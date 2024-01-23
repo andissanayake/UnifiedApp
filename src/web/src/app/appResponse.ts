@@ -1,7 +1,7 @@
 interface iMessages {
   [key: string]: string[];
 }
-export interface iAppResponce<T> {
+export interface iAppResponse<T> {
   data?: T;
   messages: iMessages;
   isSucceed: boolean;

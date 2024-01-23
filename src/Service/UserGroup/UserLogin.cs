@@ -18,7 +18,7 @@
             if (user == null)
             {
 
-                return new AppResponse<UserLoginResponce>().SetErrorResponce("email", "Email not found");
+                return new AppResponse<UserLoginResponce>().SetErrorResponse("email", "Email not found");
             }
             else
             {
@@ -26,11 +26,11 @@
                 if (result.Succeeded)
                 {
                     var token = await GenerateUserToken(user);
-                    return new AppResponse<UserLoginResponce>().SetSuccessResponce(token);
+                    return new AppResponse<UserLoginResponce>().SetSuccessResponse(token);
                 }
                 else
                 {
-                    return new AppResponse<UserLoginResponce>().SetErrorResponce("password", result.ToString());
+                    return new AppResponse<UserLoginResponce>().SetErrorResponse("password", result.ToString());
                 }
             }
         }

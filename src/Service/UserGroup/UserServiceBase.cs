@@ -4,25 +4,18 @@ using System.Security.Claims;
 
 namespace Service.UserGroup
 {
-    public partial class UserService
+    public partial class UserService(UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
+        ApplicationDbContext applicationDbContext,
+        AppSettings appSettings)
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly AppSettings _appSettings;
-        private readonly ApplicationDbContext _context;
-        public UserService(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext applicationDbContext,
-            AppSettings appSettings)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _appSettings = appSettings;
-            _roleManager = roleManager;
-            _context = applicationDbContext;
-        }
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly AppSettings _appSettings = appSettings;
+        private readonly ApplicationDbContext _context = applicationDbContext;
+
         private async Task<UserLoginResponce> GenerateUserToken(ApplicationUser user)
         {
             var claims = (from ur in _context.UserRoles

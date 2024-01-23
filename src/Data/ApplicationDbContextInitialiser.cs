@@ -5,20 +5,13 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 namespace Data
 {
-    public class ApplicationDbContextInitialiser
+    public class ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
     {
-        private readonly ILogger<ApplicationDbContextInitialiser> _logger;
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<ApplicationDbContextInitialiser> _logger = logger;
+        private readonly ApplicationDbContext _context = context;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-        public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
-        {
-            _logger = logger;
-            _context = context;
-            _userManager = userManager;
-            _roleManager = roleManager;
-        }
         public async Task InitialiseAsync()
         {
             try

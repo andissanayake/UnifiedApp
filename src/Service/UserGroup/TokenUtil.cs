@@ -12,12 +12,12 @@ namespace Service.UserGroup
         public static string GetToken(AppSettings appSettings, ApplicationUser user, List<Claim> roleClaims)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.SecretKey));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var userClaims = new List<Claim>
             {
-                new Claim("Id", user.Id.ToString()),
-                new Claim("UserName", user.UserName??"")
+                new("Id", user.Id.ToString()),
+                new ("UserName", user.UserName??"")
             };
             userClaims.AddRange(roleClaims);
             var tokeOptions = new JwtSecurityToken(
@@ -25,7 +25,7 @@ namespace Service.UserGroup
                 audience: appSettings.Audience,
                 claims: userClaims,
                 expires: DateTime.UtcNow.AddSeconds(appSettings.TokenExpireSeconds),
-                signingCredentials: signinCredentials
+                signingCredentials: signInCredentials
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
             return tokenString;
@@ -43,12 +43,9 @@ namespace Service.UserGroup
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.SecretKey))
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("GetPrincipalFromExpiredToken Token is not valiated");
+            var principal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("GetPrincipalFromExpiredToken Token is not validated");
 
             return principal;
         }

@@ -27,7 +27,7 @@ export const HomePage = () => {
       <h2>User object from store</h2>
       <pre>{JSON.stringify(auth, null, 2)}</pre>
       <p>
-        Profile api responce -{">"} <b>{userName}</b>
+        Profile api response -{">"} <b>{userName}</b>
       </p>
       <Button onClick={click}>Get profile name</Button>
     </>

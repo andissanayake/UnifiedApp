@@ -8,7 +8,7 @@ import {
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { refreshToken } from "../features/user/authAPI";
 
-export const AxiosInterceptor = () => {
+export const AxiosApiInterceptor = () => {
   const authData = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
   useEffect(() => {

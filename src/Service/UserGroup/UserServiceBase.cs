@@ -16,7 +16,7 @@ namespace Service.UserGroup
         private readonly AppSettings _appSettings = appSettings;
         private readonly ApplicationDbContext _context = applicationDbContext;
 
-        private async Task<UserLoginResponce> GenerateUserToken(ApplicationUser user)
+        private async Task<UserLoginResponse> GenerateUserToken(ApplicationUser user)
         {
             var claims = (from ur in _context.UserRoles
                           where ur.UserId == user.Id
@@ -31,7 +31,7 @@ namespace Service.UserGroup
             await _userManager.RemoveAuthenticationTokenAsync(user, "APP", "RefreshToken");
             var refreshToken = await _userManager.GenerateUserTokenAsync(user, "APP", "RefreshToken");
             await _userManager.SetAuthenticationTokenAsync(user, "APP", "RefreshToken", refreshToken);
-            return new UserLoginResponce() { AccessToken = token, RefreshToken = refreshToken };
+            return new UserLoginResponse() { AccessToken = token, RefreshToken = refreshToken };
         }
 
     }

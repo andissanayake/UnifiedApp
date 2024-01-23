@@ -14,7 +14,7 @@
     {
         public async Task<AppResponse<UserRefreshTokenResponse>> UserRefreshTokenAsync(UserRefreshTokenRequest request)
         {
-            var principal = TokenUtil.GetPrincipalFromExpiredToken(_appSettings, request.AccessToken);
+            var principal = TokenUtil.GetPrincipalFromExpiredToken(_tokenSettings, request.AccessToken);
             if (principal == null || principal.FindFirst("UserName")?.Value == null)
             {
                 return new AppResponse<UserRefreshTokenResponse>().SetErrorResponse("email", "User not found");

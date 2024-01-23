@@ -8,12 +8,12 @@ namespace Service.UserGroup
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         ApplicationDbContext applicationDbContext,
-        AppSettings appSettings)
+        TokenSettings tokenSettings)
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly AppSettings _appSettings = appSettings;
+        private readonly TokenSettings _tokenSettings = tokenSettings;
         private readonly ApplicationDbContext _context = applicationDbContext;
 
         private async Task<UserLoginResponse> GenerateUserToken(ApplicationUser user)
@@ -27,7 +27,7 @@ namespace Service.UserGroup
               .Select(rc => new Claim(rc.ClaimType ?? "", rc.ClaimValue ?? ""))
               .Distinct()
               .ToList();
-            var token = TokenUtil.GetToken(_appSettings, user, claims);
+            var token = TokenUtil.GetToken(_tokenSettings, user, claims);
             await _userManager.RemoveAuthenticationTokenAsync(user, "APP", "RefreshToken");
             var refreshToken = await _userManager.GenerateUserTokenAsync(user, "APP", "RefreshToken");
             await _userManager.SetAuthenticationTokenAsync(user, "APP", "RefreshToken", refreshToken);

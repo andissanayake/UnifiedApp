@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
-import { AxiosInterceptor } from "./app/AxiosInterceptor.ts";
+import { AxiosInterceptor } from "./app/axiosInterceptor.ts";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

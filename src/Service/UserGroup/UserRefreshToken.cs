@@ -28,7 +28,7 @@
                 }
                 else
                 {
-                    if (!await _userManager.VerifyUserTokenAsync(user, "APP", "RefreshToken", request.RefreshToken))
+                    if (!await _userManager.VerifyUserTokenAsync(user, "REFRESHTOKENPROVIDER", "RefreshToken", request.RefreshToken))
                     {
                         return new AppResponse<UserRefreshTokenResponse>().SetErrorResponse("token", "Refresh token expired");
                     }

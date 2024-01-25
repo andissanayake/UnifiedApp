@@ -14,16 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
 var appSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>() ?? default!;
 builder.Services.AddSingleton(appSettings);
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionStr, x => x.MigrationsAssembly("Data")));
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
     .AddSignInManager()
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("APP");
+    .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("REFRESHTOKENPROVIDER");
 
-builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+builder.Services.Configure<DataProtectionTokenProviderOptions>("REFRESHTOKENPROVIDER", options =>
 {
     options.TokenLifespan = TimeSpan.FromSeconds(appSettings.RefreshTokenExpireSeconds);
 });
@@ -32,11 +31,9 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer(options =>
+}).AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -52,6 +49,9 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("webAppRequests", builder =>
@@ -62,10 +62,7 @@ builder.Services.AddCors(options =>
         .AllowCredentials();
     });
 });
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+
 builder.Services.AddSwaggerGen(config =>
 {
     config.SwaggerDoc("v1", new OpenApiInfo() { Title = "App Api", Version = "v1" });
@@ -78,19 +75,20 @@ builder.Services.AddSwaggerGen(config =>
         BearerFormat = "JWT",
         Scheme = "bearer"
     });
-    config.AddSecurityRequirement(new OpenApiSecurityRequirement{
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type=ReferenceType.SecurityScheme,
-                                Id="Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+    config.AddSecurityRequirement(
+        new OpenApiSecurityRequirement{
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 var app = builder.Build();
 

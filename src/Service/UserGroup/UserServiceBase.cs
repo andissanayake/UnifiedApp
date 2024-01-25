@@ -8,15 +8,15 @@ namespace Service.UserGroup
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         ApplicationDbContext applicationDbContext,
-        AppSettings appSettings)
+        TokenSettings tokenSettings)
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly AppSettings _appSettings = appSettings;
+        private readonly TokenSettings _tokenSettings = tokenSettings;
         private readonly ApplicationDbContext _context = applicationDbContext;
 
-        private async Task<UserLoginResponce> GenerateUserToken(ApplicationUser user)
+        private async Task<UserLoginResponse> GenerateUserToken(ApplicationUser user)
         {
             var claims = (from ur in _context.UserRoles
                           where ur.UserId == user.Id
@@ -27,11 +27,11 @@ namespace Service.UserGroup
               .Select(rc => new Claim(rc.ClaimType ?? "", rc.ClaimValue ?? ""))
               .Distinct()
               .ToList();
-            var token = TokenUtil.GetToken(_appSettings, user, claims);
-            await _userManager.RemoveAuthenticationTokenAsync(user, "APP", "RefreshToken");
-            var refreshToken = await _userManager.GenerateUserTokenAsync(user, "APP", "RefreshToken");
-            await _userManager.SetAuthenticationTokenAsync(user, "APP", "RefreshToken", refreshToken);
-            return new UserLoginResponce() { AccessToken = token, RefreshToken = refreshToken };
+            var token = TokenUtil.GetToken(_tokenSettings, user, claims);
+            await _userManager.RemoveAuthenticationTokenAsync(user, "REFRESHTOKENPROVIDER", "RefreshToken");
+            var refreshToken = await _userManager.GenerateUserTokenAsync(user, "REFRESHTOKENPROVIDER", "RefreshToken");
+            await _userManager.SetAuthenticationTokenAsync(user, "REFRESHTOKENPROVIDER", "RefreshToken", refreshToken);
+            return new UserLoginResponse() { AccessToken = token, RefreshToken = refreshToken };
         }
 
     }

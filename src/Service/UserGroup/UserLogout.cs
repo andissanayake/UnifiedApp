@@ -9,8 +9,8 @@ namespace Service.UserGroup
             if (user.Identity?.IsAuthenticated ?? false)
             {
                 var username = user.Claims.First(x => x.Type == "UserName").Value;
-                var appuser = _context.Users.First(x => x.UserName == username);
-                if (appuser != null) { await _userManager.UpdateSecurityStampAsync(appuser); }
+                var appUser = _context.Users.First(x => x.UserName == username);
+                if (appUser != null) { await _userManager.UpdateSecurityStampAsync(appUser); }
                 return new AppResponse<bool>().SetSuccessResponse(true);
             }
             return new AppResponse<bool>().SetSuccessResponse(true);

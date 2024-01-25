@@ -21,7 +21,7 @@ const initialState: iAuthState = {
 export const logoutAsync = createAsyncThunk("user/logout", async () => {
   const response = await logout();
   // The value we return becomes the `fulfilled` action payload
-  return response.data;
+  return response?.data;
 });
 export const authSlice = createSlice({
   name: "auth",

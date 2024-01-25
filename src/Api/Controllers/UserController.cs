@@ -18,13 +18,13 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<AppResponse<UserLoginResponce>> Login(UserLoginRequest req)
+        public async Task<AppResponse<UserLoginResponse>> Login(UserLoginRequest req)
         {
             return await _userService.UserLoginAsync(req);
         }
 
         [HttpPost]
-        public async Task<AppResponse<UserRefreshTokenResponce>> RefreshToken(UserRefreshTokenRequest req)
+        public async Task<AppResponse<UserRefreshTokenResponse>> RefreshToken(UserRefreshTokenRequest req)
         {
             return await _userService.UserRefreshTokenAsync(req);
         }

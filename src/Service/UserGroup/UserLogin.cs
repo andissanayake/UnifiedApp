@@ -5,20 +5,20 @@
         public string Email { get; set; } = "";
         public string Password { get; set; } = "";
     }
-    public class UserLoginResponce
+    public class UserLoginResponse
     {
         public string AccessToken { get; set; } = "";
         public string RefreshToken { get; set; } = "";
     }
     public partial class UserService
     {
-        public async Task<AppResponse<UserLoginResponce>> UserLoginAsync(UserLoginRequest request)
+        public async Task<AppResponse<UserLoginResponse>> UserLoginAsync(UserLoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
 
-                return new AppResponse<UserLoginResponce>().SetErrorResponse("email", "Email not found");
+                return new AppResponse<UserLoginResponse>().SetErrorResponse("email", "Email not found");
             }
             else
             {
@@ -26,11 +26,11 @@
                 if (result.Succeeded)
                 {
                     var token = await GenerateUserToken(user);
-                    return new AppResponse<UserLoginResponce>().SetSuccessResponse(token);
+                    return new AppResponse<UserLoginResponse>().SetSuccessResponse(token);
                 }
                 else
                 {
-                    return new AppResponse<UserLoginResponce>().SetErrorResponse("password", result.ToString());
+                    return new AppResponse<UserLoginResponse>().SetErrorResponse("password", result.ToString());
                 }
             }
         }

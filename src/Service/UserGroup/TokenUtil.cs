@@ -9,7 +9,7 @@ namespace Service.UserGroup
     public static class TokenUtil
     {
 
-        public static string GetToken(AppSettings appSettings, ApplicationUser user, List<Claim> roleClaims)
+        public static string GetToken(TokenSettings appSettings, ApplicationUser user, List<Claim> roleClaims)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.SecretKey));
             var signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -31,7 +31,7 @@ namespace Service.UserGroup
             return tokenString;
         }
 
-        public static ClaimsPrincipal GetPrincipalFromExpiredToken(AppSettings appSettings, string token)
+        public static ClaimsPrincipal GetPrincipalFromExpiredToken(TokenSettings appSettings, string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {

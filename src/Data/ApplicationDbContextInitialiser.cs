@@ -39,7 +39,6 @@ namespace Data
                 throw;
             }
         }
-
         public async Task TrySeedAsync()
         {
             // Default roles

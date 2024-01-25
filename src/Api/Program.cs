@@ -9,13 +9,13 @@ using Service.UserGroup;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
 var appSettings = builder.Configuration.GetSection("TokenSettings").Get<TokenSettings>() ?? default!;
 builder.Services.AddSingleton(appSettings);
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionStr, x => x.MigrationsAssembly("Data")));
+
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
     .AddSignInManager()
@@ -46,7 +46,8 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.SecretKey)),
             ClockSkew = TimeSpan.FromSeconds(0)
         };
-    });
+});
+
 builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddControllers();
@@ -90,9 +91,8 @@ builder.Services.AddSwaggerGen(config =>
         }
     });
 });
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -102,13 +102,9 @@ if (app.Environment.IsDevelopment())
     await initialiser.InitialiseAsync();
     await initialiser.SeedAsync();
 }
-
 app.UseHttpsRedirection();
-
 app.UseCors("webAppRequests");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

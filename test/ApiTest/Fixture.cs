@@ -16,10 +16,17 @@ namespace ApiTest
                 {
                     builder.ConfigureServices(services =>
                     {
-                        // Find and remove the existing registration of ApplicationDbContext
-                        ServiceDescriptor? serviceDescriptorDbContext = services.FirstOrDefault(descriptor =>
-                            descriptor?.ServiceType == typeof(ApplicationDbContext));
-                        services.Remove(serviceDescriptorDbContext ?? default!);
+                        var context = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(ApplicationDbContext));
+                        if (context != null)
+                        {
+                            services.Remove(context);
+                            var options = services.Where(r => (r.ServiceType == typeof(DbContextOptions))
+                              || (r.ServiceType.IsGenericType && r.ServiceType.GetGenericTypeDefinition() == typeof(DbContextOptions<>))).ToArray();
+                            foreach (var option in options)
+                            {
+                                services.Remove(option);
+                            }
+                        }
 
                         // Add a new registration for ApplicationDbContext with an in-memory database
                         services.AddDbContext<ApplicationDbContext>(options =>

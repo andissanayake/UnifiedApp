@@ -67,5 +67,32 @@ namespace ApiTest
             }
         }
 
+        [Fact]
+        public async void RegistrationTest()
+        {
+            var userLoginRequest = new UserRegisterRequest
+            {
+                Email = "UnifiedAppAdmin1",
+                Password = "Pass@#123"
+            };
+
+            var jsonContent = JsonSerializer.Serialize(userLoginRequest);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Register", content);
+            if (response.IsSuccessStatusCode)
+            {
+                response.Should().NotBeNull();
+                var userLoginResponse = await response.Content.ReadFromJsonAsync<AppResponse<bool>>();
+                userLoginResponse.Should().NotBeNull();
+                userLoginResponse?.IsSucceed.Should().BeTrue();
+                userLoginResponse?.Data.Should().BeTrue();
+
+            }
+            else
+            {
+                Assert.Fail("Api call failed.");
+            }
+        }
+
     }
 }

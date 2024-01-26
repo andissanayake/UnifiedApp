@@ -2,10 +2,10 @@
 {
     public class AppResponse<T>
     {
-        public bool IsSucceed { get; set; } = true;
-        public Dictionary<string, string[]> Messages { get; set; } = [];
+        public bool IsSucceed { get; private set; } = true;
+        public Dictionary<string, string[]> Messages { get; private set; } = [];
 
-        public T? Data { get; set; }
+        public T? Data { get; private set; }
         internal AppResponse<T> SetSuccessResponse(T data)
         {
             Data = data;

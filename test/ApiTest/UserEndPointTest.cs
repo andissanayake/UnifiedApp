@@ -31,7 +31,6 @@ namespace ApiTest
                 userLoginResponse?.Data.Should().NotBeNull();
                 userLoginResponse?.Data?.AccessToken.Should().NotBeNull();
                 userLoginResponse?.Data?.RefreshToken.Should().NotBeNull();
-
             }
             else
             {
@@ -81,10 +80,11 @@ namespace ApiTest
             if (response.IsSuccessStatusCode)
             {
                 response.Should().NotBeNull();
-                var userLoginResponse = await response.Content.ReadFromJsonAsync<AppResponse<bool>>();
-                userLoginResponse.Should().NotBeNull();
-                userLoginResponse?.IsSucceed.Should().BeTrue();
-                userLoginResponse?.Data.Should().BeTrue();
+                var userRegisterResponse = await response.Content.ReadFromJsonAsync<AppResponse<bool>>();
+                userRegisterResponse.Should().NotBeNull();
+                userRegisterResponse?.IsSucceed.Should().BeTrue();
+                userRegisterResponse?.Data.Should().BeTrue();
+
 
             }
             else
@@ -93,5 +93,61 @@ namespace ApiTest
             }
         }
 
+        [Fact]
+        public async void RegistrationExistingUserTest()
+        {
+            var userLoginRequest = new UserRegisterRequest
+            {
+                Email = "UnifiedAppAdmin",
+                Password = "Pass@#123"
+            };
+
+            var jsonContent = JsonSerializer.Serialize(userLoginRequest);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Register", content);
+            if (response.IsSuccessStatusCode)
+            {
+                response.Should().NotBeNull();
+                var userRegisterResponse = await response.Content.ReadFromJsonAsync<AppResponse<bool>>();
+                userRegisterResponse.Should().NotBeNull();
+                userRegisterResponse?.IsSucceed.Should().BeFalse();
+                userRegisterResponse?.Data.Should().BeFalse();
+                userRegisterResponse?.Messages.Any(m => m.Key == "DuplicateUserName").Should().BeTrue();
+            }
+            else
+            {
+                Assert.Fail("Api call failed.");
+            }
+        }
+
+        [Fact]
+        public async void RegistrationPasswordTest()
+        {
+            var userLoginRequest = new UserRegisterRequest
+            {
+                Email = "UnifiedAppAdmin",
+                Password = "123"
+            };
+
+            var jsonContent = JsonSerializer.Serialize(userLoginRequest);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Register", content);
+            if (response.IsSuccessStatusCode)
+            {
+                response.Should().NotBeNull();
+                var userRegisterResponse = await response.Content.ReadFromJsonAsync<AppResponse<bool>>();
+                userRegisterResponse.Should().NotBeNull();
+                userRegisterResponse?.IsSucceed.Should().BeFalse();
+                userRegisterResponse?.Data.Should().BeFalse();
+                userRegisterResponse?.Messages.Any(m => m.Key == "PasswordRequiresLower").Should().BeTrue();
+                userRegisterResponse?.Messages.Any(m => m.Key == "PasswordTooShort").Should().BeTrue();
+                userRegisterResponse?.Messages.Any(m => m.Key == "PasswordRequiresNonAlphanumeric").Should().BeTrue();
+                userRegisterResponse?.Messages.Any(m => m.Key == "PasswordRequiresUpper").Should().BeTrue();
+            }
+            else
+            {
+                Assert.Fail("Api call failed.");
+            }
+        }
     }
 }

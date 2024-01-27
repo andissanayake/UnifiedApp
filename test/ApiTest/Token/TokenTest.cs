@@ -10,17 +10,9 @@ using System.Text.Json;
 namespace ApiTest.Token
 {
 
-    public class TokenTest : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class TokenTest(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-        private readonly CustomWebApplicationFactory<Program> _factory;
-
-        public TokenTest(
-            CustomWebApplicationFactory<Program> factory)
-        {
-            _factory = factory;
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async void ApiSuccessTest()

@@ -7,17 +7,9 @@ using System.Text.Json;
 
 namespace ApiTest.UserEndpoint
 {
-    public class UserEndPointTest : IClassFixture<CustomWebApplicationFactory<Program>>
+    public class UserEndPointTest(CustomWebApplicationFactory<Program> factory) : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly HttpClient _client;
-        private readonly CustomWebApplicationFactory<Program> _factory;
-
-        public UserEndPointTest(
-            CustomWebApplicationFactory<Program> factory)
-        {
-            _factory = factory;
-            _client = factory.CreateClient();
-        }
+        private readonly HttpClient _client = factory.CreateClient();
 
         [Fact]
         public async void LoginSuccessTest()

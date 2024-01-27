@@ -19,7 +19,8 @@ This example illustrates how to establish JWT token-based authentication in an A
 ![Endpoints](https://github.com/andissanayake/UnifiedApp/blob/master/images/register.png?raw=true)
 - **Login:**
 ![Endpoints](https://github.com/andissanayake/UnifiedApp/blob/master/images/login.png?raw=true)
-
+- **Unit Test:**
+![Endpoints](https://github.com/andissanayake/UnifiedApp/blob/master/images/test.png?raw=true)
 ## Database Migrations
 
 To add migrations, use the following command:

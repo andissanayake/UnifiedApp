@@ -1,9 +1,9 @@
 ﻿using Api;
 using Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Service;
 
 namespace ApiTest
 {
@@ -14,6 +14,7 @@ namespace ApiTest
             WebApplication = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
+                    builder.UseEnvironment("Test");
                     builder.ConfigureServices(services =>
                     {
                         var context = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(ApplicationDbContext));
@@ -34,19 +35,6 @@ namespace ApiTest
                             // Provide a unique name for your in-memory database
                             options.UseInMemoryDatabase("InMemoryDatabaseName");
                         });
-
-                        ServiceDescriptor? serviceDescriptorTokenSettings = services.FirstOrDefault(descriptor =>
-                            descriptor?.ServiceType == typeof(TokenSettings));
-                        services.Remove(serviceDescriptorTokenSettings ?? default!);
-                        var tokenSettings = new TokenSettings()
-                        {
-                            Issuer = "TestApi",
-                            Audience = "TestAudience",
-                            SecretKey = "SecretKeySecretKeySecretKeySecretKeySecretKey12345",
-                            TokenExpireSeconds = 15,
-                            RefreshTokenExpireSeconds = 25,
-                        };
-                        services.AddSingleton(tokenSettings);
                     });
                 });
         }

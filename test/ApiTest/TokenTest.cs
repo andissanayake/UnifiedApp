@@ -2,7 +2,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Service.UserGroup;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -37,9 +36,8 @@ namespace ApiTest
 
                 //call protected api
                 using var newClient = _fixture.WebApplication.CreateClient();
-                newClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", userLoginResponse?.Data?.AccessToken);
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "/User/Profile");
+                request.Headers.Add("Authorization", "Bearer " + userLoginResponse?.Data?.AccessToken);
                 var apiRes = await newClient.SendAsync(request);
                 apiRes.Should().NotBeNull();
                 apiRes.StatusCode.Should().Be(HttpStatusCode.OK);

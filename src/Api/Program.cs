@@ -28,7 +28,7 @@ namespace Api
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("REFRESHTOKENPROVIDER");
 
-            builder.Services.Configure<DataProtectionTokenProviderOptions>("REFRESHTOKENPROVIDER", options =>
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
             {
                 options.TokenLifespan = TimeSpan.FromSeconds(appSettings.RefreshTokenExpireSeconds);
             });
@@ -99,7 +99,7 @@ namespace Api
             });
 
             var app = builder.Build();
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

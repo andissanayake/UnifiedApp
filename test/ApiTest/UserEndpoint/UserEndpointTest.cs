@@ -1,14 +1,23 @@
+using Api;
 using FluentAssertions;
 using Service.UserGroup;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace ApiTest
+namespace ApiTest.UserEndpoint
 {
-    public class UserEndPointTest(Fixture fixture) : IClassFixture<Fixture>
+    public class UserEndPointTest : IClassFixture<CustomWebApplicationFactory<Program>>
     {
-        private readonly Fixture _fixture = fixture;
+        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Program> _factory;
+
+        public UserEndPointTest(
+            CustomWebApplicationFactory<Program> factory)
+        {
+            _factory = factory;
+            _client = factory.CreateClient();
+        }
 
         [Fact]
         public async void LoginSuccessTest()
@@ -21,7 +30,7 @@ namespace ApiTest
 
             var jsonContent = JsonSerializer.Serialize(userLoginRequest);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Login", content);
+            var response = await _client.PostAsync("/User/Login", content);
             if (response.IsSuccessStatusCode)
             {
                 response.Should().NotBeNull();
@@ -49,7 +58,7 @@ namespace ApiTest
 
             var jsonContent = JsonSerializer.Serialize(userLoginRequest);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Login", content);
+            var response = await _client.PostAsync("/User/Login", content);
             if (response.IsSuccessStatusCode)
             {
                 response.Should().NotBeNull();
@@ -76,7 +85,7 @@ namespace ApiTest
 
             var jsonContent = JsonSerializer.Serialize(userLoginRequest);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Register", content);
+            var response = await _client.PostAsync("/User/Register", content);
             if (response.IsSuccessStatusCode)
             {
                 response.Should().NotBeNull();
@@ -104,7 +113,7 @@ namespace ApiTest
 
             var jsonContent = JsonSerializer.Serialize(userLoginRequest);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Register", content);
+            var response = await _client.PostAsync("/User/Register", content);
             if (response.IsSuccessStatusCode)
             {
                 response.Should().NotBeNull();
@@ -131,7 +140,7 @@ namespace ApiTest
 
             var jsonContent = JsonSerializer.Serialize(userLoginRequest);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _fixture.WebApplication.CreateClient().PostAsync("/User/Register", content);
+            var response = await _client.PostAsync("/User/Register", content);
             if (response.IsSuccessStatusCode)
             {
                 response.Should().NotBeNull();

@@ -28,7 +28,7 @@ namespace Api
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("REFRESHTOKENPROVIDER");
 
-            builder.Services.Configure<DataProtectionTokenProviderOptions>("REFRESHTOKENPROVIDER", options =>
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
             {
                 options.TokenLifespan = TimeSpan.FromSeconds(appSettings.RefreshTokenExpireSeconds);
             });

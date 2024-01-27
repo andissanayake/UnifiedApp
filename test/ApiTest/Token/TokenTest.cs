@@ -79,7 +79,7 @@ namespace ApiTest.Token
         public async void RefreshTokenExpireTest()
         {
             var token = await GetToken();
-            await Task.Delay(32000);
+            await Task.Delay(22000);
             var rtRes = await GetRefreshToken(new UserRefreshTokenRequest
             {
                 AccessToken = token.AccessToken,
@@ -89,8 +89,9 @@ namespace ApiTest.Token
             rtRes.StatusCode.Should().Be(HttpStatusCode.OK);
             var userRefreshTokenResponse = await rtRes.Content.ReadFromJsonAsync<AppResponse<UserRefreshTokenResponse>>();
             userRefreshTokenResponse.Should().NotBeNull();
-            userRefreshTokenResponse?.IsSucceed.Should().BeTrue();
-            userRefreshTokenResponse?.Data?.Should().NotBeNull();
+            userRefreshTokenResponse?.IsSucceed.Should().BeFalse();
+            userRefreshTokenResponse?.Data?.Should().BeNull();
+            userRefreshTokenResponse?.Messages.Any(m => m.Key == "token").Should().BeTrue();
 
         }
 

@@ -27,6 +27,18 @@ namespace Service.UserGroup
               .Select(rc => new Claim(rc.ClaimType ?? "", rc.ClaimValue ?? ""))
               .Distinct()
               .ToList();
+
+            var roleClaims = (from ur in _context.UserRoles
+                              where ur.UserId == user.Id
+                              join r in _context.Roles on ur.RoleId equals r.Id
+                              select r)
+              .Where(r => !string.IsNullOrEmpty(r.Name))
+              .Select(r => new Claim(ClaimTypes.Role, r.Name!))
+              .Distinct()
+              .ToList();
+
+            claims.AddRange(roleClaims);
+
             var token = TokenUtil.GetToken(_tokenSettings, user, claims);
             await _userManager.RemoveAuthenticationTokenAsync(user, "REFRESHTOKENPROVIDER", "RefreshToken");
             var refreshToken = await _userManager.GenerateUserTokenAsync(user, "REFRESHTOKENPROVIDER", "RefreshToken");

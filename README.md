@@ -1,4 +1,5 @@
 # UnifiedApp
+[![.NET](https://github.com/andissanayake/UnifiedApp/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/andissanayake/UnifiedApp/actions/workflows/dotnet.yml)
 
 This example illustrates how to establish JWT token-based authentication in an ASP.NET Core Identity project using ASP.NET Core 8.
 

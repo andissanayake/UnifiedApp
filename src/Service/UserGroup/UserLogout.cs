@@ -11,9 +11,9 @@ namespace Service.UserGroup
                 var username = user.Claims.First(x => x.Type == "UserName").Value;
                 var appUser = _context.Users.First(x => x.UserName == username);
                 if (appUser != null) { await _userManager.UpdateSecurityStampAsync(appUser); }
-                return new AppResponse<bool>().SetSuccessResponse(true);
+                return AppResponse<bool>.SuccessResponse(true);
             }
-            return new AppResponse<bool>().SetSuccessResponse(true);
+            return AppResponse<bool>.SuccessResponse(true);
         }
     }
 }

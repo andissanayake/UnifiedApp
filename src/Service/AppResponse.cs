@@ -6,46 +6,42 @@
         public Dictionary<string, string[]> Messages { get; private set; } = [];
 
         public T? Data { get; private set; }
-        internal AppResponse<T> SetSuccessResponse(T data)
+        public static AppResponse<T> SuccessResponse(T data)
         {
-            Data = data;
-            return this;
+            return new AppResponse<T>() { Data = data, IsSucceed = true, };
         }
-        internal AppResponse<T> SetSuccessResponse(T data, string key, string value)
+        public static AppResponse<T> SuccessResponse(T data, string key, string value)
         {
-            Data = data;
-            Messages.Add(key, [value]);
-            return this;
+            var res = new AppResponse<T>() { Data = data, IsSucceed = true };
+            res.Messages.Add(key, [value]);
+            return res;
         }
-        internal AppResponse<T> SetSuccessResponse(T data, Dictionary<string, string[]> message)
+        public static AppResponse<T> SuccessResponse(T data, Dictionary<string, string[]> message)
         {
-            Data = data;
-            Messages = message;
-            return this;
+            return new AppResponse<T>() { Data = data, IsSucceed = true, Messages = message };
         }
-        internal AppResponse<T> SetSuccessResponse(T data, string key, string[] value)
+        public static AppResponse<T> SuccessResponse(T data, string key, string[] value)
         {
-            Data = data;
-            Messages.Add(key, value);
-            return this;
+            var res = new AppResponse<T>() { Data = data, IsSucceed = true };
+            res.Messages.Add(key, value);
+            return res;
         }
-        internal AppResponse<T> SetErrorResponse(string key, string value)
+        public static AppResponse<T> ErrorResponse(string key, string value)
         {
-            IsSucceed = false;
-            Messages.Add(key, [value]);
-            return this;
+            var res = new AppResponse<T>() { Data = default, IsSucceed = false };
+            res.Messages.Add(key, [value]);
+            return res;
         }
-        internal AppResponse<T> SetErrorResponse(string key, string[] value)
+        public static AppResponse<T> ErrorResponse(string key, string[] value)
         {
-            IsSucceed = false;
-            Messages.Add(key, value);
-            return this;
+            var res = new AppResponse<T>() { Data = default, IsSucceed = false };
+            res.Messages.Add(key, value);
+            return res;
         }
-        internal AppResponse<T> SetErrorResponse(Dictionary<string, string[]> message)
+        public static AppResponse<T> ErrorResponse(Dictionary<string, string[]> messages)
         {
-            IsSucceed = false;
-            Messages = message;
-            return this;
+            var res = new AppResponse<T>() { Data = default, IsSucceed = false, Messages = messages };
+            return res;
         }
     }
 }

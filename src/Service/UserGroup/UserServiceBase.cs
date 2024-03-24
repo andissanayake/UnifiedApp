@@ -23,8 +23,8 @@ namespace Service.UserGroup
                           join r in _context.Roles on ur.RoleId equals r.Id
                           join rc in _context.RoleClaims on r.Id equals rc.RoleId
                           select rc)
-              .Where(rc => rc.ClaimValue != null && rc.ClaimType != null)
-              .Select(rc => new Claim(rc.ClaimType ?? "", rc.ClaimValue ?? ""))
+              .Where(rc => !string.IsNullOrEmpty(rc.ClaimValue) && !string.IsNullOrEmpty(rc.ClaimType))
+              .Select(rc => new Claim(rc.ClaimType!, rc.ClaimValue!))
               .Distinct()
               .ToList();
 
